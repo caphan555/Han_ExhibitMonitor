@@ -50,6 +50,7 @@ public class App
 	                   "(id INTEGER not NULL AUTO_INCREMENT, " +
 	                   " fileName VARCHAR(255), " + 
 	                   " date DATE, " +
+	                   
 	                   " recordNo INTEGER, " +
 	                   " recordDetails VARCHAR(255), " + 
 	                   " PRIMARY KEY ( id ))"; 

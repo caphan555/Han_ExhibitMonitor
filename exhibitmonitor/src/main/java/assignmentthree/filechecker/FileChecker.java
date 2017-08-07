@@ -33,7 +33,7 @@ public class FileChecker implements Runnable {
 	@Override
 	public void run() {
 		int i = 0;
-		while (true) {
+		while (i==0) {
 			File inputFolder = new File(INPUT_FOLDER);
 			String[] fileList = inputFolder.list();
 
@@ -171,16 +171,10 @@ public class FileChecker implements Runnable {
 				e.printStackTrace();
 			}
 
-			/*
-			 * for(Record re: ParsedInformation.validRecords) {
-			 * System.out.println("Valid record: "+re.getFileName()+" "+re.
-			 * getRecordNo()+" "+re.getDate()+" "+re.getRecord()); }
-			 */
+			
 
 			try {
 				for (Record re : ParsedInformation.validRecords) {
-					// Record insertingRecord = new Record(re.getFileName(),
-					// re.getDate(), re.getRecordNo(), re.getRecord());
 					DatabaseRecorder dr = new DatabaseRecorder(re);
 					Thread databaseThread = new Thread(dr);
 					databaseThread.start();
@@ -188,6 +182,13 @@ public class FileChecker implements Runnable {
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+			}
+			
+			System.out.println("Valid record size: "+ParsedInformation.validRecords.size());
+			
+			for(Record invalid: ParsedInformation.invalidRecords) {
+				System.out.println("invalid records size: "+ParsedInformation.invalidRecords.size());
+				System.out.println("Invalid records: "+invalid.getFileName()+" "+invalid.getRecord()+" "+invalid.getRecordNo()+" "+invalid.getDate());
 			}
 
 			ParsedInformation.validRecords = new Vector();

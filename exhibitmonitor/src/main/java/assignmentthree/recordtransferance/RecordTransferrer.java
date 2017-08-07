@@ -2,7 +2,13 @@ package assignmentthree.recordtransferance;
 
 import assignmentthree.databaserecord.Record;
 import assignmentthree.parsedcontent.ParsedInformation;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
+import java.util.Date;
 
 public class RecordTransferrer implements Runnable {
 
@@ -28,11 +34,47 @@ public class RecordTransferrer implements Runnable {
 
 				String recordDetails = this.targetRecord.getRecord().trim();
 				String[] rowValues = recordDetails.split("/");
-
+				//System.out.println("record details: " + recordDetails);
 				if (rowValues.length == columnSize) {
-					ParsedInformation.validRecords.add(targetRecord);
+
+					for (int u = 0; u < rowValues.length; u++) {
+						String recordSettings = ls.get(u + 1);
+						String[] settingsFragment = recordSettings.split(" ");
+						//System.out.println("settings fragment: " + settingsFragment[1]);
+						if (settingsFragment[1].equals("date")) {
+							DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+							try {
+								Date date = format.parse(rowValues[u]);
+							} catch (ParseException e) {
+								System.out.println("Adding to invalid records date: " + recordDetails);
+								ParsedInformation.invalidRecords.add(targetRecord);
+								break;
+							}
+						} else if (settingsFragment[1].equals("int")) {
+							try {
+								int recordInt = Integer.parseInt(rowValues[u]);
+							} catch (NumberFormatException e) {
+								System.out.println("Adding to invalid records int: " + recordDetails);
+								ParsedInformation.invalidRecords.add(targetRecord);
+								break;
+							}
+						} else if (settingsFragment[1].equals("double")) {
+							try {
+								double recordInt = Double.parseDouble(rowValues[u]);
+							} catch (NumberFormatException e) {
+								System.out.println("Adding to invalid records double: " + recordDetails);
+								ParsedInformation.invalidRecords.add(targetRecord);
+								break;
+							}
+						}
+						int counter = u+1;
+						if(counter==rowValues.length) {
+							ParsedInformation.validRecords.add(targetRecord);
+						}
+					}
 				} else {
 					ParsedInformation.invalidRecords.add(targetRecord);
+					continue;
 				}
 			}
 		}
