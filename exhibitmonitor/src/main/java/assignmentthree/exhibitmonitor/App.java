@@ -46,7 +46,7 @@ public class App
 		stmt.executeQuery("use sakila");
 		
 	      
-	      String sql = "CREATE TABLE RECORDS " +
+	      String sql = "CREATE TABLE INVALIDRECORDS " +
 	                   "(id INTEGER not NULL AUTO_INCREMENT, " +
 	                   " fileName VARCHAR(255), " + 
 	                   " date DATE, " +

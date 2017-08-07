@@ -1,14 +1,16 @@
 package assignmentthree.databaserecord;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 
-public class DatabaseRecorder implements Runnable {
-
-	private Record record;
+public class DatabaseInvalidRecorder implements Runnable{
+private Record record;
 	
 	
 	
-	public DatabaseRecorder(Record record) {
+	public DatabaseInvalidRecorder(Record record) {
 		this.record = record;
 	}
 
@@ -31,10 +33,9 @@ public class DatabaseRecorder implements Runnable {
 				int recordNo = this.getRecord().getRecordNo();
 				String recordDetails = this.getRecord().getRecord();
 				
-				//ParsedInformation.validRecords.remove(r);
 				
 				System.out.println("testing database insertion");
-				 String query = " insert into records (fileName, date, recordNo, recordDetails) values (?, ?, ?, ?)";
+				 String query = " insert into invalidrecords (fileName, date, recordNo, recordDetails) values (?, ?, ?, ?)";
 			      PreparedStatement preparedStmt = connection.prepareStatement(query);
 			      preparedStmt.setString(1, fileName);
 			      preparedStmt.setDate(2, sqlDate);
@@ -42,7 +43,7 @@ public class DatabaseRecorder implements Runnable {
 			      preparedStmt.setString (4, recordDetails);
 			      
 			      preparedStmt.execute();
-			      System.out.println("executed insertion");
+			      System.out.println("executed invalid insertion");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally{
@@ -60,5 +61,4 @@ public class DatabaseRecorder implements Runnable {
 	public void setRecord(Record record) {
 		this.record = record;
 	}
-	
 }

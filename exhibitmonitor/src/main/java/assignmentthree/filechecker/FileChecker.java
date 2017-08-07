@@ -19,6 +19,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Vector;
 
+import assignmentthree.databaserecord.DatabaseInvalidRecorder;
 import assignmentthree.databaserecord.DatabaseRecorder;
 import assignmentthree.databaserecord.Record;
 import assignmentthree.parsedcontent.ParsedInformation;
@@ -184,12 +185,17 @@ public class FileChecker implements Runnable {
 				e.printStackTrace();
 			}
 			
-			System.out.println("Valid record size: "+ParsedInformation.validRecords.size());
-			
-			for(Record invalid: ParsedInformation.invalidRecords) {
-				System.out.println("invalid records size: "+ParsedInformation.invalidRecords.size());
-				System.out.println("Invalid records: "+invalid.getFileName()+" "+invalid.getRecord()+" "+invalid.getRecordNo()+" "+invalid.getDate());
+			try {
+				for (Record rec : ParsedInformation.invalidRecords) {
+					DatabaseInvalidRecorder dr = new DatabaseInvalidRecorder(rec);
+					Thread databaseThread = new Thread(dr);
+					databaseThread.start();
+					databaseThread.join();
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
+			
 
 			ParsedInformation.validRecords = new Vector();
 			File output = new File("D:/Exhibit Monitor Folder/Output Folder");
