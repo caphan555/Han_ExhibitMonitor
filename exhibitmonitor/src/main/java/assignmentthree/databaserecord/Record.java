@@ -6,13 +6,13 @@ public class Record {
 	
 	private String fileName;
 	private Date date;
-	private int RecordNo;
+	private int recordNo;
 	private String record;
 	
 	public Record(String fileName, Date date, int recordNo, String record) {
 		this.fileName = fileName;
 		this.date = date;
-		RecordNo = recordNo;
+		this.recordNo = recordNo;
 		this.record = record;
 	}
 
@@ -33,11 +33,11 @@ public class Record {
 	}
 
 	public int getRecordNo() {
-		return RecordNo;
+		return recordNo;
 	}
 
 	public void setRecordNo(int recordNo) {
-		RecordNo = recordNo;
+		recordNo = recordNo;
 	}
 
 	public String getRecord() {

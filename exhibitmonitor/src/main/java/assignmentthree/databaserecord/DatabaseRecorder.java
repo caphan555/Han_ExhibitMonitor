@@ -31,7 +31,6 @@ public class DatabaseRecorder implements Runnable {
 				String recordDetails = this.getRecord().getRecord();
 				
 				
-				System.out.println("testing database insertion");
 				 String query = " insert into records (fileName, date, recordNo, recordDetails) values (?, ?, ?, ?)";
 			      PreparedStatement preparedStmt = connection.prepareStatement(query);
 			      preparedStmt.setString(1, fileName);

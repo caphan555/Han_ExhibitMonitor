@@ -17,10 +17,7 @@ import org.w3c.dom.NodeList;
 import assignmentthree.filechecker.FileChecker;
 import assignmentthree.parsedcontent.ParsedInformation;
 
-/**
- * Hello world!
- *
- */
+
 public class App 
 {
     public static void main( String[] args ) throws Exception

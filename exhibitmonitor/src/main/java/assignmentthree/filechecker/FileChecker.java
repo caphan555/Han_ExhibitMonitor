@@ -69,6 +69,7 @@ public class FileChecker implements Runnable {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
+					
 				}
 			}
 
