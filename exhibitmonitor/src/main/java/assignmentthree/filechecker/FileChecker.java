@@ -193,7 +193,7 @@ public class FileChecker implements Runnable {
 
 			ParsedInformation.validRecords = new Vector();
 			ParsedInformation.invalidRecords = new Vector();
-			File output = new File("D:/Exhibit Monitor Folder/Output Folder");
+			/*File output = new File("D:/Exhibit Monitor Folder/Output Folder");
 			String[] outputList = output.list();
 
 			try {
@@ -286,7 +286,7 @@ public class FileChecker implements Runnable {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
+			}*/
 
 		}
 

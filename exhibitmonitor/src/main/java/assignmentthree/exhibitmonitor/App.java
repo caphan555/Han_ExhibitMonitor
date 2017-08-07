@@ -4,7 +4,9 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Timer;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,6 +18,8 @@ import org.w3c.dom.NodeList;
 
 import assignmentthree.filechecker.FileChecker;
 import assignmentthree.parsedcontent.ParsedInformation;
+import assignmentthree.utilities.OutputFileProducer;
+import assignmentthree.utilities.SampleTask;
 
 
 public class App 
@@ -30,6 +34,18 @@ public class App
     	FileChecker fileChecker = new FileChecker();
     	Thread polar = new Thread(fileChecker);
     	polar.start();
+    	
+    	OutputFileProducer ofp = new OutputFileProducer();
+    	Timer timer = new Timer();
+    	Thread myThread= new Thread(ofp);
+    	Calendar cal = Calendar.getInstance();
+    	cal.set(Calendar.HOUR_OF_DAY, 17);
+    	cal.set(Calendar.MINUTE, 55);
+    	timer.schedule(
+    			  new SampleTask (myThread),
+    			  cal.getTime(),
+    			  1000 * 60 * 60 * 24 * 7
+    			);
     	
     }
     
