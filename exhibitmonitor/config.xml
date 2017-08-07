@@ -1,0 +1,20 @@
+<exhibit>
+	<inputfile name="a.csv" time="09:30" grace-period="30">
+		<structure>
+			<field name="firstname" type="text"/>
+			<field name="DOB" type="date"/>
+		</structure>
+	</inputfile>
+	
+	<inputfile name="b.csv" time="10:30" grace-period="30">
+		<structure>
+			<field name="amount" type="double"/>
+			<field name="interest" type="int"/>
+		</structure>
+	</inputfile>
+
+	<outputfile name="x.csv" time="14:00">
+		<dependency file="a.csv"/>
+		<dependency file="b.csv"/>
+	</outputfile>
+</exhibit>
