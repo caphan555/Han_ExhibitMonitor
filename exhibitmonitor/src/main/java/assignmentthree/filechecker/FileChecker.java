@@ -6,13 +6,20 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Vector;
 
+import assignmentthree.databaserecord.DatabaseRecorder;
 import assignmentthree.databaserecord.Record;
 import assignmentthree.parsedcontent.ParsedInformation;
 import assignmentthree.recordtransferance.RecordTransferrer;
@@ -26,7 +33,7 @@ public class FileChecker implements Runnable {
 	@Override
 	public void run() {
 		int i = 0;
-		while (i==0) {
+		while (true) {
 			File inputFolder = new File(INPUT_FOLDER);
 			String[] fileList = inputFolder.list();
 
@@ -77,7 +84,7 @@ public class FileChecker implements Runnable {
 				List<List<String>> perFile = new ArrayList<>();
 				List<String> fileName = new ArrayList<>();
 				fileName.add(file);
-				File processFile = new File(PROCESS_FOLDER+"/"+file);
+				File processFile = new File(PROCESS_FOLDER + "/" + file);
 				fileName.add(String.valueOf(processFile.lastModified()));
 				perFile.add(fileName);
 				String line = "";
@@ -101,8 +108,8 @@ public class FileChecker implements Runnable {
 
 			// Move to Archive Folder
 			for (String file : processDirectories) {
-				File aFile = new File(PROCESS_FOLDER+ "/" + file);
-				File bFile = new File("D:/Exhibit Monitor Folder/Archive Folder/"+ file);
+				File aFile = new File(PROCESS_FOLDER + "/" + file);
+				File bFile = new File("D:/Exhibit Monitor Folder/Archive Folder/" + file);
 				try {
 					InputStream inStream = new FileInputStream(aFile);
 					OutputStream outStream = new FileOutputStream(bFile);
@@ -122,19 +129,19 @@ public class FileChecker implements Runnable {
 					e.printStackTrace();
 				}
 			}
-			
-			//Create collection of record objects to be sorted
-			List<Record> records = new ArrayList<> ();
+
+			// Create collection of record objects to be sorted
+			List<Record> records = new ArrayList<>();
 			for (List<List<String>> recordsList : wantedRecords) {
 				List<String> fileDetails = recordsList.get(0);
 				String fileName = fileDetails.get(0);
 				String lastModifiedDate = fileDetails.get(1);
-				//Not getting the column details yet so start from 2
-				for (int t=2; t<recordsList.size(); t++ ) {
+				// Not getting the column details yet so start from 2
+				for (int t = 2; t < recordsList.size(); t++) {
 					List<String> perRecord = recordsList.get(t);
-					int recordNo = t-1;
+					int recordNo = t - 1;
 					String recordDetails = "";
-					for(String s: perRecord) {
+					for (String s : perRecord) {
 						recordDetails += s;
 						recordDetails += "/";
 					}
@@ -144,16 +151,141 @@ public class FileChecker implements Runnable {
 					records.add(record);
 				}
 			}
-			
-			for(Record r:records) {
+
+			List<Thread> workers = new ArrayList<>();
+			for (Record r : records) {
+				// System.out.println(r.getFileName()+" "+r.getRecord()+"
+				// "+r.getFileName()+" "+r.getDate());
 				RecordTransferrer rt = new RecordTransferrer(r);
 				Thread worker = new Thread(rt);
-				rt.run();
+				workers.add(worker);
+
 			}
-			
-			for(Record re: ParsedInformation.validRecords) {
-				System.out.println("Valid record: "+re.getFileName()+" "+re.getRecordNo()+" "+re.getDate()+" "+re.getRecord());
+
+			try {
+				for (Thread t : workers) {
+					t.start();
+					t.join();
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
+
+			/*
+			 * for(Record re: ParsedInformation.validRecords) {
+			 * System.out.println("Valid record: "+re.getFileName()+" "+re.
+			 * getRecordNo()+" "+re.getDate()+" "+re.getRecord()); }
+			 */
+
+			try {
+				for (Record re : ParsedInformation.validRecords) {
+					// Record insertingRecord = new Record(re.getFileName(),
+					// re.getDate(), re.getRecordNo(), re.getRecord());
+					DatabaseRecorder dr = new DatabaseRecorder(re);
+					Thread databaseThread = new Thread(dr);
+					databaseThread.start();
+					databaseThread.join();
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+			ParsedInformation.validRecords = new Vector();
+			File output = new File("D:/Exhibit Monitor Folder/Output Folder");
+			String[] outputList = output.list();
+
+			try {
+				String finalFileDetails = ParsedInformation.configurationInfo.get(2).get(0);
+				String[] fileFragmentDetails = finalFileDetails.split(" ");
+				if (outputList.length == 0) {
+					Class.forName("com.mysql.jdbc.Driver");
+					Connection connectionCsv = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root",
+							"superman555");
+
+					Statement stmt = connectionCsv.createStatement();
+					stmt.executeQuery("use sakila");
+
+					String filename = "D:/Exhibit Monitor Folder/Output Folder/" + fileFragmentDetails[0];
+
+					ResultSet res = stmt.executeQuery("select * from records");
+					FileWriter fw = new FileWriter(filename);
+					int columnCount = res.getMetaData().getColumnCount();
+					for (int t = 1; t <= columnCount; t++) {
+						fw.append(res.getMetaData().getColumnName(t));
+						fw.append(',');
+					}
+					fw.append('\n');
+
+					while (res.next()) {
+						for (int u = 1; u <= columnCount; u++) {
+							if (res.getObject(u) != null) {
+								String data = res.getObject(u).toString();
+								fw.append(data);
+								fw.append(',');
+							} else {
+								String data = "null";
+								fw.append(data);
+								fw.append(',');
+							}
+
+						}
+						fw.append('\n');
+					}
+
+					fw.flush();
+					fw.close();
+				} else {
+					boolean fileExists = false;
+					for (String s : outputList) {
+						if (s.equals(fileFragmentDetails[0])) {
+							fileExists = true;
+						}
+					}
+
+					if (!fileExists) {
+						Class.forName("com.mysql.jdbc.Driver");
+						Connection connectionCsv = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root",
+								"superman555");
+
+						Statement stmt = connectionCsv.createStatement();
+						stmt.executeQuery("use sakila");
+
+						String filename = "D:/Exhibit Monitor Folder/Output Folder/" + fileFragmentDetails[0];
+
+						ResultSet res = stmt.executeQuery("SELECT * FROM RECORDS");
+						FileWriter fw = new FileWriter(filename);
+						int columnCount = res.getMetaData().getColumnCount();
+						for (int t = 1; t <= columnCount; t++) {
+							fw.append(res.getMetaData().getColumnName(t));
+							fw.append(",");
+						}
+						fw.append(System.getProperty("line.separator"));
+
+						while (res.next()) {
+							for (int u = 1; u <= columnCount; i++) {
+
+								if (res.getObject(u) != null) {
+									String data = res.getObject(u).toString();
+									fw.append(data);
+									fw.append(",");
+								} else {
+									String data = "null";
+									fw.append(data);
+									fw.append(",");
+								}
+
+							}
+							fw.append('\n');
+						}
+
+						fw.flush();
+						fw.close();
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 			i++;
 		}
 

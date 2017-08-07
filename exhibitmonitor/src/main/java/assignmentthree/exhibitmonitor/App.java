@@ -1,7 +1,9 @@
 package assignmentthree.exhibitmonitor;
 
 import java.io.File;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,8 +16,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.mysql.jdbc.Connection;
-
+import assignmentthree.databaserecord.DatabaseRecorder;
 import assignmentthree.filechecker.FileChecker;
 import assignmentthree.parsedcontent.ParsedInformation;
 import assignmentthree.utilities.FileValiditor;;
@@ -26,7 +27,7 @@ import assignmentthree.utilities.FileValiditor;;
  */
 public class App 
 {
-    public static void main( String[] args )
+    public static void main( String[] args ) throws Exception
     {
     	List<List<String>> information = setUp();
     	ParsedInformation pi = new ParsedInformation(information);
@@ -34,33 +35,39 @@ public class App
     	File inputFolder = new File("D:/Exhibit Monitor Folder/Input Folder");
     	String[] fileList = inputFolder.list();
     	
-    	for(String s: fileList) {
-    		System.out.println(s);
-    	}
-    	System.out.println();
+    	
     	
     	//Create database table
     	Class.forName("com.mysql.jdbc.Driver");
 		Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root","superman555");
 		
 		//Statement stmt 
-		Statement stmt = connection.createStatement();
+		/*Statement stmt = connection.createStatement();
 		stmt.executeQuery("use sakila");
 		
 	      
-	      String sql = "CREATE TABLE REGISTRATION " +
-	                   "(id INTEGER not NULL, " +
-	                   " first VARCHAR(255), " + 
-	                   " last VARCHAR(255), " + 
-	                   " age INTEGER, " + 
+	      String sql = "CREATE TABLE RECORDS " +
+	                   "(id INTEGER not NULL AUTO_INCREMENT, " +
+	                   " fileName VARCHAR(255), " + 
+	                   " date DATE, " +
+	                   " recordNo INTEGER, " +
+	                   " recordDetails VARCHAR(255), " + 
 	                   " PRIMARY KEY ( id ))"; 
 
-	    stmt.executeUpdate(sql);
+	    stmt.executeUpdate(sql);*/
     	
     	
     	FileChecker fileChecker = new FileChecker();
     	Thread polar = new Thread(fileChecker);
     	polar.start();
+    	//polar.join();
+    	
+    	//DatabaseRecorder dr = new DatabaseRecorder();
+		 //Thread databaseThread = new Thread(dr);
+    	//databaseThread.start();
+    	//databaseThread.join();
+    	
+    	
     }
     
     public static List<List<String>> setUp() {
