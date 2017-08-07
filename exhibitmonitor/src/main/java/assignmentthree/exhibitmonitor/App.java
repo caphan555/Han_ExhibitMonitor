@@ -2,7 +2,6 @@ package assignmentthree.exhibitmonitor;
 
 import java.io.File;
 import java.sql.Connection;
-import java.sql.Statement;
 import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,14 +11,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import assignmentthree.databaserecord.DatabaseRecorder;
 import assignmentthree.filechecker.FileChecker;
 import assignmentthree.parsedcontent.ParsedInformation;
-import assignmentthree.utilities.FileValiditor;;
 
 /**
  * Hello world!
@@ -32,42 +28,11 @@ public class App
     	List<List<String>> information = setUp();
     	ParsedInformation pi = new ParsedInformation(information);
     	
-    	File inputFolder = new File("D:/Exhibit Monitor Folder/Input Folder");
-    	String[] fileList = inputFolder.list();
-    	
-    	
-    	
-    	//Create database table
-    	Class.forName("com.mysql.jdbc.Driver");
-		Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root","superman555");
-		
-		//Statement stmt 
-		/*Statement stmt = connection.createStatement();
-		stmt.executeQuery("use sakila");
-		
-	      
-	      String sql = "CREATE TABLE INVALIDRECORDS " +
-	                   "(id INTEGER not NULL AUTO_INCREMENT, " +
-	                   " fileName VARCHAR(255), " + 
-	                   " date DATE, " +
-	                   
-	                   " recordNo INTEGER, " +
-	                   " recordDetails VARCHAR(255), " + 
-	                   " PRIMARY KEY ( id ))"; 
-
-	    stmt.executeUpdate(sql);*/
     	
     	
     	FileChecker fileChecker = new FileChecker();
     	Thread polar = new Thread(fileChecker);
     	polar.start();
-    	//polar.join();
-    	
-    	//DatabaseRecorder dr = new DatabaseRecorder();
-		 //Thread databaseThread = new Thread(dr);
-    	//databaseThread.start();
-    	//databaseThread.join();
-    	
     	
     }
     
@@ -143,12 +108,7 @@ public class App
             
             information.add(outputFile);
             
-           for(List<String> i: information) {
-        	   for(String t: i) {
-        		   System.out.println(t);
-        	   }
-        	   System.out.println();
-           }
+          
             
             return information;
          } catch (Exception e) {

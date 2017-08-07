@@ -3,7 +3,6 @@ package assignmentthree.filechecker;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -33,8 +32,7 @@ public class FileChecker implements Runnable {
 
 	@Override
 	public void run() {
-		int i = 0;
-		while (i==0) {
+		while (true) {
 			File inputFolder = new File(INPUT_FOLDER);
 			String[] fileList = inputFolder.list();
 
@@ -50,7 +48,6 @@ public class FileChecker implements Runnable {
 					fileOnTime = FileValiditor.isOnTime(s);
 				}
 				if (fileOnTime) {
-					// Move to Process Folder
 					File aFile = new File(INPUT_FOLDER + "/" + s);
 					File bFile = new File(PROCESS_FOLDER + "/" + s);
 					try {
@@ -69,7 +66,6 @@ public class FileChecker implements Runnable {
 
 						aFile.delete();
 
-						System.out.println(s + " File successfully copied");
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -107,7 +103,6 @@ public class FileChecker implements Runnable {
 				wantedRecords.add(perFile);
 			}
 
-			// Move to Archive Folder
 			for (String file : processDirectories) {
 				File aFile = new File(PROCESS_FOLDER + "/" + file);
 				File bFile = new File("D:/Exhibit Monitor Folder/Archive Folder/" + file);
@@ -155,8 +150,6 @@ public class FileChecker implements Runnable {
 
 			List<Thread> workers = new ArrayList<>();
 			for (Record r : records) {
-				// System.out.println(r.getFileName()+" "+r.getRecord()+"
-				// "+r.getFileName()+" "+r.getDate());
 				RecordTransferrer rt = new RecordTransferrer(r);
 				Thread worker = new Thread(rt);
 				workers.add(worker);
@@ -198,6 +191,7 @@ public class FileChecker implements Runnable {
 			
 
 			ParsedInformation.validRecords = new Vector();
+			ParsedInformation.invalidRecords = new Vector();
 			File output = new File("D:/Exhibit Monitor Folder/Output Folder");
 			String[] outputList = output.list();
 
@@ -269,7 +263,7 @@ public class FileChecker implements Runnable {
 						fw.append(System.getProperty("line.separator"));
 
 						while (res.next()) {
-							for (int u = 1; u <= columnCount; i++) {
+							for (int u = 1; u <= columnCount; u++) {
 
 								if (res.getObject(u) != null) {
 									String data = res.getObject(u).toString();
@@ -293,7 +287,6 @@ public class FileChecker implements Runnable {
 				e.printStackTrace();
 			}
 
-			i++;
 		}
 
 	}

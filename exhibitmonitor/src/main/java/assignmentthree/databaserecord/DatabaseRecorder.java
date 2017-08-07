@@ -21,7 +21,6 @@ public class DatabaseRecorder implements Runnable {
 		try {
 				
 				
-				//Statement stmt =
 				Statement stmt = connection.createStatement();
 				stmt.executeQuery("use sakila");
 				
@@ -31,7 +30,6 @@ public class DatabaseRecorder implements Runnable {
 				int recordNo = this.getRecord().getRecordNo();
 				String recordDetails = this.getRecord().getRecord();
 				
-				//ParsedInformation.validRecords.remove(r);
 				
 				System.out.println("testing database insertion");
 				 String query = " insert into records (fileName, date, recordNo, recordDetails) values (?, ?, ?, ?)";
@@ -42,7 +40,6 @@ public class DatabaseRecorder implements Runnable {
 			      preparedStmt.setString (4, recordDetails);
 			      
 			      preparedStmt.execute();
-			      System.out.println("executed insertion");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally{
