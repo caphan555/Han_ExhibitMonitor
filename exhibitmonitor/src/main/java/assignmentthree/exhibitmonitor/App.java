@@ -27,6 +27,7 @@ public class App
     	List<List<String>> information = setUp();
     	ParsedInformation pi = new ParsedInformation(information);
     	
+    	
     	FileChecker fileChecker = new FileChecker();
     	Thread polar = new Thread(fileChecker);
     	polar.start();
@@ -35,8 +36,14 @@ public class App
     	Timer timer = new Timer();
     	Thread myThread= new Thread(ofp);
     	Calendar cal = Calendar.getInstance();
-    	cal.set(Calendar.HOUR_OF_DAY, 11);
-    	cal.set(Calendar.MINUTE, 26);
+    	
+    	String outputFileInfo = ParsedInformation.configurationInfo.get(ParsedInformation.configurationInfo.size()-1).get(0);
+    	String[] infoSegment = outputFileInfo.split(" ");
+    
+    	String[] timeInfo = infoSegment[1].split(":");
+    
+    	cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timeInfo[0]));
+    	cal.set(Calendar.MINUTE, Integer.parseInt(timeInfo[1]));
     	timer.schedule(
     			  new SampleTask (myThread),
     			  cal.getTime(),

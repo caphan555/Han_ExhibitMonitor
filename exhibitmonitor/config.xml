@@ -13,7 +13,7 @@
 		</structure>
 	</inputfile>
 
-	<outputfile name="x.csv" time="14:00">
+	<outputfile name="x.csv" time="13:46">
 		<dependency file="a.csv"/>
 		<dependency file="b.csv"/>
 	</outputfile>
