@@ -37,7 +37,7 @@ public class Record {
 	}
 
 	public void setRecordNo(int recordNo) {
-		recordNo = recordNo;
+		this.recordNo = recordNo;
 	}
 
 	public String getRecord() {

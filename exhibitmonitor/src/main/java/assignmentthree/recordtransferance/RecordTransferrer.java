@@ -41,21 +41,21 @@ public class RecordTransferrer implements Runnable {
 						if (settingsFragment[1].equals("date")) {
 							DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
 							try {
-								Date date = format.parse(rowValues[u]);
+								format.parse(rowValues[u]);
 							} catch (ParseException e) {
 								ParsedInformation.invalidRecords.add(targetRecord);
 								break;
 							}
 						} else if (settingsFragment[1].equals("int")) {
 							try {
-								int recordInt = Integer.parseInt(rowValues[u]);
+								Integer.parseInt(rowValues[u]);
 							} catch (NumberFormatException e) {
 								ParsedInformation.invalidRecords.add(targetRecord);
 								break;
 							}
 						} else if (settingsFragment[1].equals("double")) {
 							try {
-								double recordInt = Double.parseDouble(rowValues[u]);
+								Double.parseDouble(rowValues[u]);
 							} catch (NumberFormatException e) {
 								ParsedInformation.invalidRecords.add(targetRecord);
 								break;

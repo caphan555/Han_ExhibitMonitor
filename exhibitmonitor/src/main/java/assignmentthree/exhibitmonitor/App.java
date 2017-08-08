@@ -1,8 +1,6 @@
 package assignmentthree.exhibitmonitor;
 
 import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -29,8 +27,6 @@ public class App
     	List<List<String>> information = setUp();
     	ParsedInformation pi = new ParsedInformation(information);
     	
-    	
-    	
     	FileChecker fileChecker = new FileChecker();
     	Thread polar = new Thread(fileChecker);
     	polar.start();
@@ -39,8 +35,8 @@ public class App
     	Timer timer = new Timer();
     	Thread myThread= new Thread(ofp);
     	Calendar cal = Calendar.getInstance();
-    	cal.set(Calendar.HOUR_OF_DAY, 17);
-    	cal.set(Calendar.MINUTE, 55);
+    	cal.set(Calendar.HOUR_OF_DAY, 11);
+    	cal.set(Calendar.MINUTE, 26);
     	timer.schedule(
     			  new SampleTask (myThread),
     			  cal.getTime(),

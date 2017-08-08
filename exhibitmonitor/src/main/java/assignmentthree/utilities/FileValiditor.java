@@ -73,7 +73,6 @@ public class FileValiditor {
 				File targetFile = new File("D:/Exhibit Monitor Folder/Input Folder/"+targetFileName);
 				
 				if(cal.getTimeInMillis() > targetFile.lastModified()) {
-					System.out.println("returning true for on time");
 					return true;
 				}
 			}
